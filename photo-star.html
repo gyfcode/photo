@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		html,body{
+			height: 100%;
+			position: relative;
+			overflow: hidden;
+			background: url(1.jpg) no-repeat right top/cover;
+
+		}
+		body,ul,li{
+			margin: 0;
+			padding: 0;
+			list-style: none;
+		}
+		.mask{
+			width: 100%;
+			height: 100%;
+			position: absolute;
+			left: 0;
+			top: 0;
+			background: rgba(0,0,0,0.7);
+			display: none;
+		}
+		.photo{
+			width: 660px;
+			overflow: hidden;
+			background: rgba(255,255,255,0.8);
+		}
+		.photo li{
+			width: 200px;
+			height: 200px;
+			float: left;
+			margin: 10px;
+		}
+		.photo li img{
+			width: 100%;
+			height: 100%;
+		}
+		.bigImg{
+			width: 500px;
+			height: 500px;
+			position: absolute;
+			left: 0;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			margin: auto;
+			z-index: 99999;
+		}
+		.bigImg img{
+			width: 100%;
+			height: 100%;
+		}
+		.btnGroup{
+			width: 800px;
+			height: 40px;
+			position: absolute;
+			left: 0;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			margin: auto;
+		}
+		.btnGroup .btn{
+			width: 50px;
+			height: 50px;
+		}
+		.lbtn{
+			float: left;
+			background: url(images/l.png) no-repeat center center/cover;
+		}
+		.rbtn{
+			float: right;
+			background: url(images/r.png) no-repeat center center/cover;
+		}
+		.closeBtn{
+			width: 40px;
+			height: 40px;
+			position: absolute;
+		
+			top: 50px;
+			right: 50px;
+			background: url(images/close.png) no-repeat center center/cover;
+			
+		}
+	</style>
+</head>
+<body>
+	<ul class="photo">
+		<li><img src="images/1.jpg" alt=""></li>
+		<li><img src="images/2.jpg" alt=""></li>
+		<li><img src="images/3.jpg" alt=""></li>
+		<li><img src="images/4.jpg" alt=""></li>
+		<li><img src="images/5.jpg" alt=""></li>
+		<li><img src="images/6.jpg" alt=""></li>
+		<li><img src="images/7.jpg" alt=""></li>
+		<li><img src="images/8.jpg" alt=""></li>
+		<li><img src="images/9.jpg" alt=""></li>
+	</ul>
+	<div class="mask">
+		<div class="bigImg">
+			<img src="" alt="">
+		</div>
+		<div class="btnGroup">
+			<div class="btn lbtn"></div>
+			<div class="btn rbtn"></div>
+		</div>
+		<div class="closeBtn"></div>
+	</div>
+</body>
+</html>
+<script src="jquery.min.js"></script>
+<script>
+	var lbtn=$('.lbtn');
+	var rbtn=$('.rbtn');
+	var closeBtn=$('.closeBtn');
+	$('.photo li').click(function() {
+		var src=$(this).find('img').attr('src');
+		$('.mask').fadeIn(200);
+		$('.bigImg img').attr('src',src);
+		makeYuan(200)
+		
+	})
+	rbtn.click(function(){
+		var src=$('.bigImg img').attr('src');
+		src=src.slice(src.lastIndexOf('/')+1);
+		src=src.slice(0,src.lastIndexOf('.'));
+		var num=parseInt(src)+1;
+		if(num>$('.photo li').length-1){
+			num=1;
+		}
+		console.log(num)
+		console.log($('.bigImg img').attr('src'))
+		$('.bigImg img').attr('src','images/'+num+'.jpg')
+		console.log($('.bigImg img').attr('src'))
+	})
+
+
+	lbtn.click(function(){
+		var src=$('.bigImg img').attr('src');
+		src=src.slice(src.lastIndexOf('/')+1);
+		src=src.slice(0,src.lastIndexOf('.'));
+		var num=parseInt(src)-1;
+		if(num<1){
+			num=$('.photo li').length-1;
+		}
+		console.log(num)
+		console.log($('.bigImg img').attr('src'))
+		$('.bigImg img').attr('src','images/'+num+'.jpg')
+		console.log($('.bigImg img').attr('src'))
+	})
+	closeBtn.click(function(){
+		$('.mask').fadeOut(200)
+		$('.mask canvas').remove()
+	})
+
+	function makeYuan(num){
+		
+		
+	
+		for(var i=0;i<num;i++){
+			var r=Math.floor(Math.random()*255);
+			var g=Math.floor(Math.random()*255);
+			var b=Math.floor(Math.random()*255);
+			var a=Math.random();
+			var banjing=Math.floor(Math.random()*20+5);
+			var left=Math.random()*($(window).width())-683;
+			var tops=Math.random()*($(window).height())-320;
+			var canvas=$('<canvas width='+r+' height='+r+'></canvas>')[0];
+			var cobj=canvas.getContext("2d");
+			cobj.translate(r/2,r/2);
+			var x1=0;
+			var y1=0;
+
+			jiao(0,0,r/2,r/2,cobj)
+			cobj.fillStyle='rgba('+r+','+g+','+b+','+1+')';
+			cobj.fill()
+			$(canvas).css({zIndex:999,width:banjing,height:banjing,position:'absolute',left:0,top:0,right:0,bottom:0,margin:'auto'}).appendTo('.mask').delay(i*3).animate({left:left*2,top:tops*2},1000)
+			
+		}
+	}
+
+
+	function jiao(x1,y1,x2,y2,cobj){//多角星
+		var r=_r(x1,y1,x2,y2);
+		var r2=r/3;
+		var angle=360/(5*2);
+		cobj.beginPath();
+		for(var i=0;i<5*2;i++){
+			if(i%2==0){
+				cobj.lineTo(x1+r*Math.cos(angle*i*Math.PI/180),y1+r*Math.sin(angle*i*Math.PI/180));
+			}else{
+				cobj.lineTo(x1+r2*Math.cos(angle*i*Math.PI/180),y1+r2*Math.sin(angle*i*Math.PI/180));
+			}
+			
+		}
+		cobj.closePath();
+
+	}
+	function _r(x1,y1,x2,y2){//半径
+		return Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
+	}
+
+
+</script>
